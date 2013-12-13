@@ -19,9 +19,10 @@ module AttrHelper
           klass.attr_required attribute.name, {
             :name => attribute.name,
             :key => attribute.key,
+            :default => attribute.default,
+            :serialize => attribute.serialize,
             :if => attribute.if_cond,
-            :unless => attribute.unless_cond,
-            :serialize => attribute.serialize
+            :unless => attribute.unless_cond
           }
         end
       end
@@ -31,6 +32,7 @@ module AttrHelper
           klass.attr_optional attribute.name, {
             :name => attribute.name,
             :key => attribute.key,
+            :default => attribute.default,
             :serialize => attribute.serialize
           }
         end
@@ -96,7 +98,7 @@ module AttrHelper
   def write_attributes(attrs = {})
     attrs = attrs.symbolize_keys
     attributes.each do |attribute|
-      value = attrs[attribute.key.to_sym]
+      value = attrs[attribute.key.to_sym] || attribute.default
       self.send("#{attribute.name}=", value) unless value.nil?
     end
   end

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe DataPackage::Schema do
   let(:json) {
-    json = {
+    {
       'fields' => [
         {
           'name' => 'income',
@@ -15,23 +15,11 @@ describe DataPackage::Schema do
   }
 
   it "should initialize" do
-    field = DataPackage::Field.new('income', :number)
-    schema = DataPackage::Schema.new([field], :primary_key => ['income'])
+    schema = DataPackage::Schema.new(json)
 
-    schema.fields.should == [field]
+    schema.fields.length.should == 1
+    schema.fields.first.name.should == 'income'
     schema.primary_key.should == ['income']
-  end
-
-  it "should load from json" do
-    schema = DataPackage::Schema.load(json)
-    field = DataPackage::Field.new('income', :number)
-
-    schema.fields.should == [field]
-    schema.primary_key.should == ['income']
-  end
-
-  it "should serialize to json" do
-    schema = DataPackage::Schema.load(json)
-    schema.to_json(:pretty => true).should == Yajl::Encoder.encode(json, :pretty => true)
+    schema.to_json.should == Yajl::Encoder.encode(json, :pretty => true)
   end
 end

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe DataPackage::Dialect do
   let(:json) {
-    json = {
+    {
       "delimiter" => "\t",
       "doublequote" => false,
       "lineterminator" => "\n",
@@ -11,8 +11,10 @@ describe DataPackage::Dialect do
     }
   }
 
-  it "should initialize" do
+  it "should initialize with defaults" do
     dialect = DataPackage::Dialect.new
+
+    puts dialect.inspect
 
     dialect.delimiter.should == ','
     dialect.double_quote.should == false
@@ -21,18 +23,15 @@ describe DataPackage::Dialect do
     dialect.skip_initial_space.should == false
   end
 
-  it "should load from json" do
-    dialect = DataPackage::Dialect.load(json)
+  it "should initialize and serialize" do
+    dialect = DataPackage::Dialect.new(json)
 
     dialect.delimiter.should == "\t"
     dialect.double_quote.should == false
     dialect.line_terminator.should == "\n"
     dialect.quote_char.should == "\""
     dialect.skip_initial_space.should == true
-  end
 
-  it "should serialize to json" do
-    dialect = DataPackage::Dialect.load(json)
-    dialect.to_json(:pretty => true).should == Yajl::Encoder.encode(json, :pretty => true)
+    dialect.to_json.should == Yajl::Encoder.encode(json, :pretty => true)
   end
 end
