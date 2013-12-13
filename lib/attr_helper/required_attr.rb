@@ -1,4 +1,4 @@
-module AttrHelpers
+module AttrHelper
   class RequiredAttr
     attr_reader :name
 

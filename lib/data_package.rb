@@ -1,10 +1,7 @@
 require "data_package/version"
 
-# JSON Spec Helpers
-require 'attr_helpers/optional'
-require 'attr_helpers/required'
-require 'attr_helpers/required_attr'
-require 'attr_helpers/assignment'
+# Attribute Helpers
+require 'attr_helper'
 
 # Core Specification
 require 'data_package/base'

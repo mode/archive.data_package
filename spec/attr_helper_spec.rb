@@ -1,8 +1,7 @@
 require 'spec_helper'
 
 class RequiredKlass
-  include AttrHelpers::Required
-  include AttrHelpers::Assignment
+  include AttrHelper
 
   attr_required :name
   attr_required :not_required, :if => Proc.new{|obj| false}
@@ -21,8 +20,7 @@ class ChildRequiredKlass < RequiredKlass
 end
 
 class MutualExclusionKlass
-  include AttrHelpers::Required
-  include AttrHelpers::Assignment
+  include AttrHelper
 
   attr_required :data, :if => Proc.new{ |o| o.path.nil? && o.url.nil?  }
   attr_required :path, :if => Proc.new{ |o| o.data.nil? && o.url.nil?  }
@@ -30,8 +28,7 @@ class MutualExclusionKlass
 end
 
 class AssignmentKlass
-  include AttrHelpers::Required
-  include AttrHelpers::Assignment
+  include AttrHelper
 
   attr_required :name
 
@@ -44,7 +41,7 @@ class AssignmentKlass
   end
 end
 
-describe AttrHelpers::Required do
+describe AttrHelper do
   it "should initialize" do
     obj = RequiredKlass.new(:name => 'myvalue')
 
@@ -98,5 +95,44 @@ describe AttrHelpers::Required do
     obj = AssignmentKlass.new(:name => 'value')
 
     obj.name.should == 'valuetest'
+  end
+end
+
+class BaseKlass
+  include AttrHelper
+
+  attr_optional :name
+
+  def initialize(attrs = {})
+    write_attributes(attrs)
+  end
+end
+
+class ChildKlass < BaseKlass
+end
+
+describe AttrHelper do
+  it "should initialize" do
+    obj = BaseKlass.new(:name => 'myvalue')
+
+    obj.name.should == 'myvalue'
+
+    obj.attr_present?(:name).should == true
+    obj.attr_missing?(:name).should == false
+
+    obj.attr_present?(:is_required).should == false
+    obj.attr_missing?(:is_required).should == true
+  end
+
+  it "should inherit" do
+    obj = ChildRequiredKlass.new(:name => 'myvalue')
+
+    obj.name.should == 'myvalue'
+
+    obj.attr_present?(:name).should == true
+    obj.attr_missing?(:name).should == false
+
+    obj.attr_present?(:is_required).should == false
+    obj.attr_missing?(:is_required).should == true
   end
 end

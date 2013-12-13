@@ -1,10 +1,5 @@
 module DataPackage
   class Base
-    include AttrHelpers::Optional
-    include AttrHelpers::Required
-
-    def attributes
-      
-    end
+    include AttrHelper
   end
 end

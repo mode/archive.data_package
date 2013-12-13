@@ -12,10 +12,10 @@ class ValueObj
   end
 end
 
-describe AttrHelpers::RequiredAttr do
+describe AttrHelper::RequiredAttr do
   it "should initialize" do
     valueObj = ValueObj.new(:name => 'value')
-    attribute = AttrHelpers::RequiredAttr.new(:name)
+    attribute = AttrHelper::RequiredAttr.new(:name)
 
     attribute.name.should == :name
     attribute.key.should == 'name'
@@ -25,25 +25,25 @@ describe AttrHelpers::RequiredAttr do
 
   it "should check for if requirement with a proc" do
     valueObj = ValueObj.new(:name => 'value')
-    attribute = AttrHelpers::RequiredAttr.new(:name, :if => Proc.new{|parent| true})
+    attribute = AttrHelper::RequiredAttr.new(:name, :if => Proc.new{|parent| true})
     attribute.required?(valueObj).should == true
   end
 
   it "should check for if requirement with a symbol" do
     valueObj = ValueObj.new(:name => 'value')
-    attribute = AttrHelpers::RequiredAttr.new(:name, :if => :is_name_required?)
+    attribute = AttrHelper::RequiredAttr.new(:name, :if => :is_name_required?)
     attribute.required?(valueObj).should == true
   end
 
   it "should check for unless requirement with a proc" do
     valueObj = ValueObj.new(:name => 'value')
-    attribute = AttrHelpers::RequiredAttr.new(:name, :unless => Proc.new{|parent| true})
+    attribute = AttrHelper::RequiredAttr.new(:name, :unless => Proc.new{|parent| true})
     attribute.required?(valueObj).should == false
   end
 
   it "should check for unless requirement with a symbol" do
     valueObj = ValueObj.new(:name => 'value')
-    attribute = AttrHelpers::RequiredAttr.new(:name, :unless => :is_name_required?)
+    attribute = AttrHelper::RequiredAttr.new(:name, :unless => :is_name_required?)
     attribute.required?(valueObj).should == false
   end
 end
