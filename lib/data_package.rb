@@ -1,3 +1,5 @@
+require 'active_support/core_ext/hash'
+
 require "data_package/version"
 
 # Attribute Helpers

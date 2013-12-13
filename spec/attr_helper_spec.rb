@@ -1,115 +1,5 @@
 require 'spec_helper'
-
-class RequiredKlass
-  include AttrHelper
-
-  attr_required :name
-  attr_required :not_required, :if => Proc.new{|obj| false}
-  attr_required :is_required, :unless => :false_value
-
-  def initialize(attrs = {})
-    write_attributes(attrs)
-  end
-
-  def false_value
-    false
-  end
-end
-
-class ChildRequiredKlass < RequiredKlass
-end
-
-class MutualExclusionKlass
-  include AttrHelper
-
-  attr_required :data, :if => Proc.new{ |o| o.path.nil? && o.url.nil?  }
-  attr_required :path, :if => Proc.new{ |o| o.data.nil? && o.url.nil?  }
-  attr_required :url,  :if => Proc.new{ |o| o.data.nil? && o.path.nil? }
-end
-
-class AssignmentKlass
-  include AttrHelper
-
-  attr_required :name
-
-  def initialize(attrs = {})
-    write_attributes(attrs)
-  end
-
-  def name=(value)
-    write_attribute(:name, value + "test")
-  end
-end
-
-describe AttrHelper do
-  it "should initialize" do
-    obj = RequiredKlass.new(:name => 'myvalue')
-
-    obj.name.should == 'myvalue'
-
-    obj.attr_required?(:name).should == true
-    obj.attr_required?(:not_required).should == false
-    obj.attr_required?(:is_required).should == true
-
-    obj.missing_attributes.collect(&:name).should == [:is_required]
-    obj.required_attributes.collect(&:name).should == [:name, :is_required]
-
-    obj.attr_present?(:name).should == true
-    obj.attr_missing?(:name).should == false
-
-    obj.attr_present?(:is_required).should == false
-    obj.attr_missing?(:is_required).should == true
-  end
-
-  it "should inherit" do
-    obj = ChildRequiredKlass.new(:name => 'myvalue')
-
-    obj.name.should == 'myvalue'
-
-    obj.attr_required?(:name).should == true
-    obj.attr_required?(:not_required).should == false
-    obj.attr_required?(:is_required).should == true
-
-    obj.missing_attributes.collect(&:name).should == [:is_required]
-    obj.required_attributes.collect(&:name).should == [:name, :is_required]
-
-    obj.attr_present?(:name).should == true
-    obj.attr_missing?(:name).should == false
-
-    obj.attr_present?(:is_required).should == false
-    obj.attr_missing?(:is_required).should == true
-  end
-
-  it "should allow mutual exclusion" do
-    obj = MutualExclusionKlass.new
-
-    obj.missing_attributes.collect(&:name).should == [:data, :path, :url]
-    obj.required_attributes.collect(&:name).should == [:data, :path, :url]
-
-    obj.path = 'data.csv'
-    obj.missing_attributes.collect(&:name).should == []
-    obj.required_attributes.collect(&:name).should == [:path]
-  end
-
-  it "should write attributes through the setters" do
-    obj = AssignmentKlass.new(:name => 'value')
-
-    obj.name.should == 'valuetest'
-  end
-end
-
-class BaseKlass
-  include AttrHelper
-
-  attr_optional :name
-
-  def initialize(attrs = {})
-    write_attributes(attrs)
-  end
-end
-
-class ChildKlass < BaseKlass
-end
+require 'klass_helper'
 
 describe AttrHelper do
   it "should initialize" do
@@ -117,22 +7,54 @@ describe AttrHelper do
 
     obj.name.should == 'myvalue'
 
+    obj.attr_required?(:name).should == true
+    obj.attr_required?(:title).should == false
+    obj.attr_required?(:format).should == false
+
+    obj.missing_attributes.collect(&:name).should == [:data, :path, :url, :email, :web]
+    obj.required_attributes.collect(&:name).should == [:name, :data, :path, :url, :email, :web]
+
     obj.attr_present?(:name).should == true
     obj.attr_missing?(:name).should == false
 
-    obj.attr_present?(:is_required).should == false
-    obj.attr_missing?(:is_required).should == true
+    obj.attr_present?(:data).should == false
+    obj.attr_missing?(:data).should == true
   end
 
   it "should inherit" do
-    obj = ChildRequiredKlass.new(:name => 'myvalue')
+    obj = ChildKlass.new(:name => 'myvalue')
 
     obj.name.should == 'myvalue'
+
+    obj.attr_required?(:name).should == true
+    obj.attr_required?(:title).should == false
+    obj.attr_required?(:format).should == false
+
+    obj.missing_attributes.collect(&:name).should == [:data, :path, :url, :email, :web]
+    obj.required_attributes.collect(&:name).should == [:name, :data, :path, :url, :email, :web]
 
     obj.attr_present?(:name).should == true
     obj.attr_missing?(:name).should == false
 
-    obj.attr_present?(:is_required).should == false
-    obj.attr_missing?(:is_required).should == true
+    obj.attr_present?(:data).should == false
+    obj.attr_missing?(:data).should == true
+  end
+
+  it "should allow mutual exclusion" do
+    obj = ChildKlass.new(:name => 'myvalue')
+
+    obj.missing_attributes.collect(&:name).should == [:data, :path, :url, :email, :web]
+    obj.required_attributes.collect(&:name).should == [:name, :data, :path, :url, :email, :web]
+
+    obj.path = 'data.csv'
+    obj.missing_attributes.collect(&:name).should == [:email, :web]
+    obj.required_attributes.collect(&:name).should == [:name, :path, :email, :web]
+  end
+
+  it "should write attributes through the setters" do
+    obj = ChildKlass.new(:name => 'myvalue', :title => 'mytitle')
+
+    obj.name.should == 'myvalue'
+    obj.title.should == 'mytitlechild'
   end
 end

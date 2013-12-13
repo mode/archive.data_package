@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     data_package (0.0.1)
+      active_support
       data_kit
       rcsv
       rubyzip
@@ -10,6 +11,9 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    active_support (3.0.0)
+      activesupport (= 3.0.0)
+    activesupport (3.0.0)
     codeclimate-test-reporter (0.2.0)
       simplecov (>= 0.7.1, < 1.0.0)
     data_kit (0.0.2)

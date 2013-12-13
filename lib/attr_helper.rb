@@ -10,6 +10,9 @@ module AttrHelper
     def inherited(klass)
       super
 
+      # we might want to undef here so
+      #  that child classes can override
+
       unless required_attributes.empty?
         required_attributes.each do |attribute|
           klass.attr_required attribute.name, {
@@ -74,11 +77,11 @@ module AttrHelper
   end
 
   def attr_required?(name)
-    required_attributes.find{|a| a.name == name} != nil
+    required_attributes.any?{|a| a.name == name}
   end
 
   def attr_missing?(name)
-    missing_attributes.find{|a| a.name == name} != nil
+    missing_attributes.any?{|a| a.name == name}
   end
 
   def attr_present?(name)
@@ -90,8 +93,10 @@ module AttrHelper
   end
 
   def write_attributes(attrs = {})
+    attrs.symbolize_keys!
     attributes.each do |attribute|
-      self.send("#{attribute.name}=", attrs[attribute.key.to_sym])
+      value = attrs[attribute.key.to_sym]
+      self.send("#{attribute.name}=", value) unless value.nil?
     end
   end
 end
