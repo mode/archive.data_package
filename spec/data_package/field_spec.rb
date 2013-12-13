@@ -1,40 +1,29 @@
 require 'spec_helper'
 
 describe DataPackage::Field do
-  it "should initialize" do
-    field = DataPackage::Field.new('income', :number, {'title' => 'Personal Income'})
-
-    field.name.should == 'income'
-    field.type.should == :number
-    field.title.should == 'Personal Income'
-  end
-
-  it "should load from json" do
-    json = {
+  let(:json) {
+    {
       'name' => 'income',
       'type' => 'number',
       'title' => 'Personal Income',
-      'description' => 'My Desc',
-      'format' => 'normal'
+      'description' => 'My Desc'
     }
+  }
 
-    field = DataPackage::Field.load(json)
+  it "should initialize and serialize" do
+    field = DataPackage::Field.new(json)
 
-    field.name.should == 'income'
     field.type.should == :number
-    field.title.should == 'Personal Income'
-    field.description.should == 'My Desc'
-    field.format.should == 'normal'
+    field.name.should == json['name']
+    field.title.should == json['title']
+    field.description.should == json['description']
+
+    field.to_hash.should == json.merge('type' => :number)
+    field.to_json.should == Yajl::Encoder.encode(field.to_hash, :pretty => true)
   end
 
-  it "should serialize to json" do
-    field = DataPackage::Field.new('income', :number, {'title' => 'Personal Income'})
-
-    serialized = field.to_json
-    serialized.should == Yajl::Encoder.encode({
-      'name' => 'income',
-      'type' => 'number',
-      'title' => 'Personal Income'
-    }, :pretty => true)
+  it "should require a name" do
+    field = DataPackage::Field.new
+    field.missing_attributes.collect(&:name).should == [:name]
   end
 end

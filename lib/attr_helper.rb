@@ -94,7 +94,7 @@ module AttrHelper
   end
 
   def write_attributes(attrs = {})
-    attrs.symbolize_keys!
+    attrs = attrs.symbolize_keys
     attributes.each do |attribute|
       value = attrs[attribute.key.to_sym]
       self.send("#{attribute.name}=", value) unless value.nil?

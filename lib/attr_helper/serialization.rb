@@ -1,21 +1,25 @@
-require 'json'
+require 'yajl'
 
 module AttrHelper
   module Serialization
-    def to_json
-      json = {}
-      attributes.each do |attribute|
-        if attribute.serializable?
+    def to_hash
+      {}.tap do |hsh|
+        attributes.each do |attribute|
+          next unless attribute.serializable?
+          
           value = attribute.serialized(self)
 
           if value.respond_to?(:empty?)
-            json[attribute.key] = value unless value.empty?
+            hsh[attribute.key] = value unless value.empty?
           else
-            json[attribute.key] = value unless value.nil?
+            hsh[attribute.key] = value unless value.nil?
           end
         end
       end
-      JSON.generate(json)
+    end
+
+    def to_json(options = {})
+      Yajl::Encoder.encode(to_hash, options.reverse_merge(:pretty => true))
     end
   end
 end

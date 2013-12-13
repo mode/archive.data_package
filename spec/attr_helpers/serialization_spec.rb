@@ -4,6 +4,6 @@ require 'klass_helper'
 describe AttrHelper do
   it "should serialize" do
     obj = BaseKlass.new(:name => 'myvalue')
-    obj.to_json.should == JSON.generate({:name => 'myvalue'})
+    obj.to_json.should == Yajl::Encoder.encode({:name => 'myvalue'}, :pretty => true)
   end
 end
