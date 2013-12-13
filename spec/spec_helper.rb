@@ -13,7 +13,7 @@ require 'tmpdir'
 require 'data_package'
 
 RSpec.configure do |config|
-  def csv_path(filename)
-    File.join(File.dirname(__FILE__), 'data', filename)
+  def base_path
+    File.join(File.dirname(__FILE__), '..', 'fixtures')
   end
 end

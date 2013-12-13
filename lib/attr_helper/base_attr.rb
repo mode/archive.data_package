@@ -22,12 +22,14 @@ module AttrHelper
     end
 
     def serialized(parent)
+      value = parent.send(name.to_sym)
+      
       if @serialize == true
-        parent.send(name.to_sym)
+        value
       elsif @serialize.is_a?(Symbol)
-        parent.send(@serialize)
+        parent.send(@serialize, value)
       elsif serialize.is_a?(Proc)
-        @serialize.call(parent)
+        @serialize.call(value)
       end
     end
   end

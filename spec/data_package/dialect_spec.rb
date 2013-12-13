@@ -14,8 +14,6 @@ describe DataPackage::Dialect do
   it "should initialize with defaults" do
     dialect = DataPackage::Dialect.new
 
-    puts dialect.inspect
-
     dialect.delimiter.should == ','
     dialect.double_quote.should == false
     dialect.line_terminator.should == "\n"

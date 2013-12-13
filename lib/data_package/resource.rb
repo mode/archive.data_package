@@ -1,107 +1,75 @@
-require 'yajl'
 require 'data_kit'
 
 module DataPackage
-  class Resource
+  class Resource < Base    
+    attr_optional :name
 
-    attr_accessor :schema
-    attr_accessor :dialect
+    attr_required :data,
+      :if => Proc.new{ |resource| resource.path.nil? && resource.url.nil?  }
 
-    attr_accessor :name
-    attr_accessor :format
-    attr_accessor :media_type
-    attr_accessor :path
+    attr_required :path,
+      :if => Proc.new{ |resource| resource.data.nil? && resource.url.nil?  }
+    
+    attr_required :url,
+      :if => Proc.new{ |resource| resource.data.nil? && resource.path.nil? }
 
-    attr_accessor :size
-    attr_accessor :md5hash
-    attr_accessor :last_modified
+    attr_required :schema, :serialize => Proc.new { |schema| schema.to_hash }
+    attr_optional :dialect, :serialize => Proc.new { |dialect| dialect.to_hash }
+
+    attr_optional :format, :default => 'csv'
+    attr_optional :media_type, :key => 'mediaType'
+
+    attr_optional :size
+    attr_optional :hash
+    attr_optional :last_modified, :key => 'lastModified'
 
     attr_accessor :base_path
 
-    def initialize(schema, options = {})
-      @schema = schema
-      @dialect = options['dialect']
-
-      @name = options['name']
-      @format = options['format'] || 'csv'
-      @path = options['path'] || 'data.csv'
-      # TODO allow for URLs or inline data here
-
-      @media_type = options['mediatype']
-      @size = options['bytes'] || options['size']
-      @md5hash = options['hash'] || options['md5hash']
-      @last_modified = options['modified'] || options['lastModified']
-
-      @base_path = options['base_path'] || File.expand_path('.')
+    def initialize(base_path, attrs = {})
+      @base_path = base_path
+      super(attrs)
     end
+
+    def schema=(json)
+      @schema = Schema.new(json)
+    end
+
+    def dialect=(json)
+      @dialect = Dialect.new(json)
+    end
+
+    def each_row(&block)
+      case data_source_type
+      when :data
+        data.each(&block)
+      when :path
+        case format
+        when 'csv'
+          opts = {'dialect' => dialect}
+          DataKit::CSV::Parser.new(full_path, opts).each_row(&block)
+        else
+          raise "Unrecognized resource format #{format} for resource #{name}."
+        end
+      when :url
+        raise "URL based resources are not yet supported"
+      else
+        raise "Resources require one of data, path or url keys to be specified"
+      end
+    end
+
+    private
 
     def full_path
       File.join(base_path, path)
     end
 
-    def to_hash
-      {
-        'name' => name,
-        'format' => format,
-        'mediatype' => media_type,
-        'path' => path,
-        'bytes' => size,
-        'hash' => md5hash,
-        'modified' => last_modified,
-        'dialect' => (dialect && dialect.to_hash),
-        'schema' => schema.to_hash
-      }.delete_if{ |k, v| v.nil? || v.empty? }
-    end
-
-    def to_json(options = {})
-      options = {:pretty => true}.merge(options)
-      Yajl::Encoder.encode(to_hash, options)
-    end
-
-    def each_row(&block)
-      case format
-      when 'csv'
-        opts = {'dialect' => dialect}
-        parser = DataKit::CSV::Parser.new(full_path, opts)
-        parser.each_row(schema.parser_columns, &block)
-      else
-        raise "Unrecognized resource format #{format} for resource #{name}."
-      end
-    end
-
-    class << self
-      def load(json, base_path = '.')
-        if json.nil?
-          raise "Invalid resource format"
-        end
-
-        unless json['schema']
-          raise "Schema not found for resource #{json['name']}"
-        end
-        
-        options = {
-          'name' => json['name'],
-          'format' => json['format'],
-          'mediatype' => json['mediatype'],
-          'path' => json['path'],
-          'size' => json['bytes'] || json['size'],
-          'md5hash' => json['hash'] || json['md5hash'],
-          'lastModified' => json['modified'] || json['lastModified'],
-          'base_path' => base_path
-        }.delete_if{ |k, v| v.nil? || v.empty? }
-
-
-        if json['dialect']
-          options['dialect'] = Dialect.load(json['dialect'])
-        end
-
-        schema = Schema.load(json['schema'])
-
-        new(schema, options)
-      end
-
-      def build(schema, path, options = {})
-        new(schema, options.merge({'path' => path}))
+    def data_source_type
+      if data
+        :data
+      elsif path
+        :path
+      elsif url
+        :url
       end
     end
   end

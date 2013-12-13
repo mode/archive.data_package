@@ -11,7 +11,7 @@ class ValueObj
     true
   end
 
-  def serialized_name
+  def serialized_name(name)
     name + 'method'
   end
 end
@@ -37,7 +37,7 @@ describe AttrHelper::BaseAttr do
 
     it "should serialize with a proc" do
       valueObj = ValueObj.new(:name => 'value')
-      attribute = AttrHelper::BaseAttr.new(:name, :serialize => Proc.new{|o| o.name + 'proc'})
+      attribute = AttrHelper::BaseAttr.new(:name, :serialize => Proc.new{|name| name + 'proc'})
 
       attribute.serializable?.should == true
       attribute.serialized(valueObj).should == 'valueproc'

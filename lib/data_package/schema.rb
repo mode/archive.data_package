@@ -1,7 +1,7 @@
 module DataPackage
   class Schema < Base
-    attr_required :fields, :serialize => Proc.new{
-      |schema| schema.fields.collect(&:to_hash)
+    attr_required :fields, :serialize => Proc.new { |fields|
+      fields.collect(&:to_hash)
     }
 
     attr_optional :primary_key, :key => 'primaryKey'

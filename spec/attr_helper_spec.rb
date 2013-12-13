@@ -3,7 +3,7 @@ require 'klass_helper'
 
 describe AttrHelper do
   it "should initialize" do
-    obj = BaseKlass.new(:name => 'myvalue')
+    obj = KlassHelper::BaseKlass.new(:name => 'myvalue')
 
     obj.name.should == 'myvalue'
 
@@ -22,7 +22,7 @@ describe AttrHelper do
   end
 
   it "should inherit" do
-    obj = ChildKlass.new(:name => 'myvalue')
+    obj = KlassHelper::ChildKlass.new(:name => 'myvalue')
 
     obj.name.should == 'myvalue'
 
@@ -41,7 +41,7 @@ describe AttrHelper do
   end
 
   it "should allow mutual exclusion" do
-    obj = ChildKlass.new(:name => 'myvalue')
+    obj = KlassHelper::ChildKlass.new(:name => 'myvalue')
 
     obj.missing_attributes.collect(&:name).should == [:data, :path, :url, :email, :web]
     obj.required_attributes.collect(&:name).should == [:name, :data, :path, :url, :email, :web]
@@ -52,7 +52,7 @@ describe AttrHelper do
   end
 
   it "should write attributes through the setters" do
-    obj = ChildKlass.new(:name => 'myvalue', :title => 'mytitle')
+    obj = KlassHelper::ChildKlass.new(:name => 'myvalue', :title => 'mytitle')
 
     obj.name.should == 'myvalue'
     obj.title.should == 'mytitlechild'
