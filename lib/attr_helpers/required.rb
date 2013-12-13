@@ -11,7 +11,15 @@ module AttrHelpers
         super
 
         unless required_attributes.empty?
-          klass.attr_required *required_attributes
+          required_attributes.each do |attribute|
+            klass.attr_required attribute.name, {
+              :name => attribute.name,
+              :key => attribute.key,
+              :if => attribute.if_cond,
+              :unless => attribute.unless_cond,
+              :serialize => attribute.serialize
+            }
+          end
         end
       end
 

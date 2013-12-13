@@ -5,34 +5,49 @@ module AttrHelpers
     attr_reader :key
     attr_reader :serialize
 
+    attr_reader :if_cond
+    attr_reader :unless_cond
+
     def initialize(name, options = {})
       @name = name
       @key = options[:key] || name.to_s
       @serialize = options[:serialize] || true
 
-      @_if = options[:if]
-      @_unless = options[:unless]
+      @if_cond = options[:if]
+      @unless_cond = options[:unless]
     end
 
-    def required?(parent = nil)
-      if @_if.nil? || parent.nil?
+    def required?(parent)
+      if conditions_empty?
         true
-      elsif @_if.is_a?(Symbol)
-        parent.send(@_if)
       else
-        @_if.call(parent) && !excluded?(parent)
+        included?(parent) && !excluded?(parent)
       end
     end
 
     private
 
-    def excluded?(parent)
-      if @_unless.nil?
-        false
-      elsif @_unless.is_a?(Symbol)
-        parent.send(@_unless)
+    def conditions_empty?
+      if_cond.nil? && unless_cond.nil?
+    end
+
+    def included?(parent)
+      if if_cond.nil?
+        true
+      elsif if_cond.is_a?(Symbol)
+        parent.send(if_cond)
       else
-        @_unless.call(parent)
+        if_cond.call(parent)
+      end
+    end
+
+    def excluded?(parent)
+      if unless_cond.nil?
+        false
+      elsif unless_cond.is_a?(Symbol)
+        parent.send(unless_cond)
+      else
+        unless_cond.call(parent)
       end
     end
   end
