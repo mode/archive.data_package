@@ -1,5 +1,6 @@
-require 'attr_helper/optional_attr'
+require 'attr_helper/base_attr'
 require 'attr_helper/required_attr'
+require 'attr_helper/serialization'
 
 module AttrHelper
   def self.included(klass)
@@ -36,6 +37,15 @@ module AttrHelper
       end
     end
 
+    def attr_optional(name, options = {})
+      optional_attributes << BaseAttr.new(name.to_sym, options)
+      attr_accessor name.to_sym
+    end
+
+    def optional_attributes
+      @optional_attributes ||= []
+    end
+
     def attr_required(name, options = {})
       required_attributes << RequiredAttr.new(name.to_sym, options)
       attr_accessor name.to_sym
@@ -43,15 +53,6 @@ module AttrHelper
 
     def required_attributes
       @required_attributes ||= []
-    end
-
-    def attr_optional(name, options = {})
-      optional_attributes << OptionalAttr.new(name.to_sym, options)
-      attr_accessor name.to_sym
-    end
-
-    def optional_attributes
-      @optional_attributes ||= []
     end
   end
 

@@ -1,18 +1,10 @@
 module AttrHelper
-  class RequiredAttr
-    attr_reader :name
-
-    attr_reader :key
-    attr_reader :serialize
-
+  class RequiredAttr < BaseAttr
     attr_reader :if_cond
     attr_reader :unless_cond
 
     def initialize(name, options = {})
-      @name = name
-      @key = options[:key] || name.to_s
-      @serialize = options[:serialize] || true
-
+      super(name, options)
       @if_cond = options[:if]
       @unless_cond = options[:unless]
     end

@@ -1,6 +1,7 @@
 class BaseKlass
   include AttrHelper
-
+  include AttrHelper::Serialization
+  
   attr_required :name
   attr_optional :title
   attr_optional :format
