@@ -31,7 +31,7 @@ module DataPackage
         'title' => title,
         'description' => description,
         'format' => format
-      }.delete_if { |k, v| v.nil? || v.empty? }
+      }.delete_if { |k, v| v.respond_to?(:empty?) ? v.empty? : v.nil? }
     end
 
     def to_json(options = {})

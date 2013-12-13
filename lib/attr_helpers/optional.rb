@@ -1,5 +1,5 @@
-module Mode
-  module AttrOptional
+module AttrHelpers
+  module Optional
 
     def self.included(klass)
       klass.send :extend, ClassMethods
@@ -9,6 +9,7 @@ module Mode
 
       def inherited(klass)
         super
+
         unless optional_attributes.empty?
           klass.attr_optional *optional_attributes
         end
@@ -18,16 +19,9 @@ module Mode
         if defined? undef_required_attributes
           undef_required_attributes *keys
         end
+
         optional_attributes.concat(keys)
         attr_accessor *keys
-      end
-
-      def attr_optional?(key)
-        optional_attributes.include?(key)
-      end
-
-      def optional_attributes
-        @optional_attributes ||= []
       end
 
       def undef_optional_attributes(*keys)
@@ -42,11 +36,11 @@ module Mode
     end
 
     def optional_attributes
-      self.class.optional_attributes
+      @optional_attributes ||= []
     end
 
     def attr_optional?(key)
-      self.class.attr_optional? key
+      optional_attributes.include?(key)
     end
 
   end
