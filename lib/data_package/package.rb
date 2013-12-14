@@ -18,9 +18,6 @@ module DataPackage
 
     attr_accessor :resources
 
-    # has_option :licenses, :from => 'licenses', :default => [],
-    #   :serialize => lamda { |licenses| licenses.collect(&:to_hash) }
-
     def initialize(path, name, options = {})
       @path = path
       @name = name
