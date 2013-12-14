@@ -14,7 +14,7 @@ module DataPackage
       :if => Proc.new{ |resource| resource.data.nil? && resource.path.nil? }
 
     attr_required :schema, :serialize => Proc.new { |schema| schema.to_hash }
-    attr_optional :dialect, :serialize => Proc.new { |dialect| dialect.to_hash }
+    attr_optional :dialect, :serialize => Proc.new { |dialect| dialect && dialect.to_hash }
 
     attr_optional :format, :default => 'csv'
     attr_optional :media_type, :key => 'mediaType'
@@ -45,8 +45,7 @@ module DataPackage
       when :path
         case format
         when 'csv'
-          opts = {'dialect' => dialect}
-          DataKit::CSV::Parser.new(full_path, opts).each_row(&block)
+          DataKit::CSV::Parser.new(full_path).each_row(&block)
         else
           raise "Unrecognized resource format #{format} for resource #{name}."
         end

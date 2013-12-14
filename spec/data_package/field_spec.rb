@@ -18,7 +18,7 @@ describe DataPackage::Field do
     field.title.should == json['title']
     field.description.should == json['description']
 
-    field.to_hash.should == json.merge('type' => :number)
+    field.to_hash.should == json
     field.to_json.should == Yajl::Encoder.encode(field.to_hash, :pretty => true)
   end
 

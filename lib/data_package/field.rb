@@ -9,7 +9,8 @@ module DataPackage
     attr_required :name
     attr_optional :title
     attr_optional :description
-    attr_optional :type, :default => :string
+    attr_optional :type, :default => :string,
+      :serialize => Proc.new{ |type| type && type.to_s }
     attr_optional :format
 
     def type=(value)

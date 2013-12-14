@@ -14,6 +14,6 @@ require 'data_package'
 
 RSpec.configure do |config|
   def base_path
-    File.join(File.dirname(__FILE__), '..', 'fixtures')
+    File.join(File.dirname(__FILE__), 'fixtures')
   end
 end

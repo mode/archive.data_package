@@ -22,7 +22,7 @@ module AttrHelper
     end
 
     def serialized(parent)
-      value = parent.send(name.to_sym)
+      value = parent.send(name.to_sym) || default
       
       if @serialize == true
         value
