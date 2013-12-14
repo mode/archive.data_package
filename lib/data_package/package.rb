@@ -1,178 +1,99 @@
-require 'yajl'
-
 module DataPackage
-  class Package
-    attr_accessor :path
-    attr_accessor :name
+  class Package < Base
+    attr_required :name
 
-    attr_accessor :title
-    attr_accessor :version
-    attr_accessor :description
-    attr_accessor :last_modified
-    attr_accessor :datapackage_version
+    attr_optional :path
+    attr_optional :title
+    attr_optional :version
+    attr_optional :description
+    attr_optional :last_modified
+    attr_optional :datapackage_version
 
-    attr_accessor :sources
-    attr_accessor :licenses
-    attr_accessor :maintainers
-    attr_accessor :contributors
+    attr_optional :sources, :serialize => Proc.new { |source|
+      source && source.collect(&:to_hash)
+    }
+    
+    attr_optional :licenses, :serialize => Proc.new { |licenses|
+      licenses && licenses.collect(&:to_hash)
+    }
+    
+    attr_optional :maintainers, :serialize => Proc.new { |maintainers|
+      maintainers && maintainers.collect(&:to_hash)
+    }
 
-    attr_accessor :resources
+    attr_optional :contributors, :serialize => Proc.new { |contributors|
+      contributors && contributors.collect(&:to_hash)
+    }
 
-    def initialize(path, name, options = {})
-      @path = path
-      @name = name
+    attr_optional :resources, :serialize => Proc.new { |resources|
+      resources && resources.collect(&:to_hash)
+    }
 
-      @title = options['title']
-      @version = options['version']
-      @description = options['description']
-      @last_modified = options['last_modified']
-      @datapackage_version = options['datapackage_version']
+    attr_accessor :base_path
 
-      @sources = options['sources'] || []
-      @licenses = options['licenses'] || []
-      @maintainers = options['maintainers'] || []
-      @contributors = options['contributors'] || []
-
-      @resources = options['resources'] || []
+    def initialize(base_path, attrs = {})
+      @base_path = base_path
+      super(attrs)
     end
 
-    def to_hash
-      {
-        'name' => name,
-        'title' => title,
-        'version' => version,
-        'description' => description,
-        'last_modified' => last_modified,
-        'datapackage_version' => datapackage_version,
-        'sources' => sources.collect(&:to_hash),
-        'licenses' => licenses.collect(&:to_hash),
-        'maintainers' => maintainers.collect(&:to_hash),
-        'contributors' => contributors.collect(&:to_hash),
-        'resources' => resources.collect(&:to_hash)
-      }.delete_if{ |k,v| v.nil? || v.empty? }
+    def save
+      File.open(full_path, 'w+') do |file|
+        file.write(self.to_json)
+      end
     end
 
-    def to_json(options = {})
-      options = {:pretty => true}.merge(options)
-      Yajl::Encoder.encode(to_hash, options)
+    def sources=(json)
+      @sources = json.collect{|s| Source.new(s)}
     end
 
-    def dump
-      self.class.dump(self)
+    def licenses=(json)
+      @licenses = json.collect{|l| License.new(l)}
+    end
+
+    def maintainers=(json)
+      @maintainers = json.collect{|m| Person.new(m)}
+    end
+
+    def contributors=(json)
+      @contributors = json.collect{|c| Person.new(c)}
+    end
+
+    def resources=(json)
+      @resources = json.collect{|r| Resource.new(path, r)}
+    end
+
+    private
+
+    def full_path
+      File.join(base_path, 'datapackage.json')
     end
 
     class << self
-      def exist?(path)
-        File.exist?(full_path(path))
+      def exist?(base_path)
+        File.exist?(full_path(base_path))
       end
       
-      def full_path(path)
-        expanded = File.expand_path(path)
-        File.join(expanded, 'datapackage.json')
+      def full_path(base_path)
+        File.join(File.expand_path(base_path), 'datapackage.json')
       end
 
-      def init(path, name)
-        File.open(full_path(path), 'w+') do |file|
-          file.write(Yajl::Encoder.encode({
-            name: name,
-            version: '0.0.1'
-          }, :pretty => true))
-        end
+      def init(base_path, name)
+        pkg = new(base_path, :name => name, :version => '0.0.1')
+        pkg.save
 
-        open(path)
+        open(base_path)
       end
 
-      def open(path)
-        full_path = full_path(path)
-        expanded = File.expand_path(path)
+      def open(base_path)
+        full_path = full_path(base_path)
+        base_path = File.expand_path(base_path)
 
         if File.exist?(full_path)
           file = File.open(full_path)
-          load(path, Yajl::Parser.parse(file))
+          new(base_path, Yajl::Parser.parse(file))
         else
           raise "Couldn't find datapackage.json at #{path}"
         end
-      end
-
-      def dump(package)
-        File.open(full_path(package.path), 'w+') do |file|
-          file.write(package.to_json(:pretty => true))
-        end
-      end
-
-      def load(path, json)
-        props = [
-          'title', 'description', 'version',
-          'last_modified', 'datapackage_version'
-        ]
-
-        options = json.select do |k, v|
-          props.include?(k)
-        end.delete_if{ |k, v| v.nil? }
-
-        if json['sources']
-          options['sources'] = build_sources(json['sources'])
-        end
-
-        if json['licenses']
-          options['licenses'] = build_licenses(json['licenses'])
-        end
-
-        if json['maintainers']
-          options['maintainers'] = build_maintainers(json['maintainers'])
-        end
-
-        if json['contributors']
-          options['contributors'] = build_contributors(json['contributors'])
-        end
-
-        if json['resources']
-          options['resources'] = build_resources(json['resources'], path)
-        end
-
-        new(path, json['name'], options)
-      end
-
-      private
-
-      def build_resources(json, path)
-        resources = []
-        json.each do |resource|
-          resources << Resource.load(resource, path)
-        end
-        resources
-      end
-
-      def build_sources(json)
-        sources = []
-        json.each do |source|
-          sources << Source.load(source)
-        end
-        sources
-      end
-
-      def build_licenses(json)
-        licenses = []
-        json.each do |license|
-          licenses << License.load(license)
-        end
-        licenses
-      end
-
-      def build_maintainers(json)
-        maintainers = []
-        json.each do |maintainer|
-          maintainers << Person.load(maintainer)
-        end
-        maintainers
-      end
-
-      def build_contributors(json)
-        contributors = []
-        json.each do |contributor|
-          contributors << Person.load(contributor)
-        end
-        contributors
       end
     end
   end
