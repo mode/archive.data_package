@@ -1,0 +1,94 @@
+{
+  "name": "standard",
+  "version": "0.0.1",
+  "title": "Standard Data Package",
+  
+  "sources": [
+    {
+      "name": "Josh F",
+      "email": "josh@modeanalytics.com",
+      "web": "http://www.modeanalytics.com/josh"
+    }
+  ],
+
+  "licenses": [
+    {
+      "id": "PDDL",
+      "url": "http://opendatacommons.org/licenses/pddl/"
+    }
+  ],
+
+  "maintainers": [
+    {
+      "name": "Josh F",
+      "email": "josh@modeanalytics.com",
+      "web": "http://www.modeanalytics.com/josh"
+    }
+  ],
+
+  "contributors": [
+    {
+      "name": "Josh F",
+      "email": "josh@modeanalytics.com",
+      "web": "http://www.modeanalytics.com/josh"
+    }
+  ], 
+
+  "resources": [
+    {
+      "name": "standard",
+      "path": "standard.csv",
+
+      "dialect": {
+        "delimiter": ","
+      },
+
+      "schema": {
+        "fields": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "first_name",
+            "type": "string"
+          },
+          {
+            "name": "last_name",
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "type": "string"
+          },
+          {
+            "name": "country",
+            "type": "string"
+          },
+          {
+            "name": "ip_address",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "active",
+            "type": "boolean"
+          },
+          {
+            "name": "activated_at",
+            "type": "datetime"
+          },
+          {
+            "name": "address",
+            "type": "string"
+          }
+        ],
+
+        "primaryKey": ["id"]
+      }
+    }
+  ]
+}

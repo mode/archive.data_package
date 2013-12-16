@@ -18,15 +18,25 @@ describe DataPackage::Package do
     expect { package = DataPackage::Package.open(tmpdir) }.to raise_error
   end
 
-  it "should initialize and serialize" do
-    package = DataPackage::Package.new(tmpdir, json)
+  it "should check if a package exists" do
+    package_path = File.join(base_path, 'package')
+    DataPackage::Package.exist?(package_path).should == true
+  end
 
-    package.path.should == tmpdir
-    package.name.should == 'mypackage'
-    package.title.should == 'Tells me about things'
+  it "should initialize and serialize" do
+    package_path = File.join(base_path, 'package')
+    package = DataPackage::Package.open(package_path)
+
+    package.name.should == 'standard'
+    package.title.should == 'Standard Data Package'
     package.version.should == '0.0.1'
 
     package.resources.length.should == 1
+
+    # Did schema d
+    package.resources.first.schema.fields.length.should == 10
+    package.resources.first.schema.primary_key.should == ['id']
+
     package.sources.length.should == 1
     package.licenses.length.should == 1
     package.maintainers.length.should == 1
