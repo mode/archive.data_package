@@ -5,6 +5,10 @@ describe DataPackage::Package do
     Dir.mktmpdir
   }
 
+  let(:package_path) {
+    File.join(base_path, 'package')
+  }
+
   it "should init" do
     package = DataPackage::Package.init(tmpdir, 'mypackage')
 
@@ -19,12 +23,10 @@ describe DataPackage::Package do
   end
 
   it "should check if a package exists" do
-    package_path = File.join(base_path, 'package')
     DataPackage::Package.exist?(package_path).should == true
   end
 
   it "should initialize and serialize" do
-    package_path = File.join(base_path, 'package')
     package = DataPackage::Package.open(package_path)
 
     package.name.should == 'standard'
@@ -33,7 +35,6 @@ describe DataPackage::Package do
 
     package.resources.length.should == 1
 
-    # Did schema d
     package.resources.first.schema.fields.length.should == 10
     package.resources.first.schema.primary_key.should == ['id']
 
@@ -43,8 +44,16 @@ describe DataPackage::Package do
     package.contributors.length.should == 1
   end
 
-  # it "should serialize to json" do
-  #   package = DataPackage::Package.load(tmpdir, json)
-  #   package.to_json.should == Yajl::Encoder.encode(json, :pretty => true)
-  # end
+  it "should save the package" do
+    package = DataPackage::Package.open(package_path)
+
+    package.base_path = tmpdir
+    package.name = "tested_package"
+
+    package.save
+
+    reopened = DataPackage::Package.open(tmpdir)
+
+    reopened.name.should == "tested_package"
+  end
 end
