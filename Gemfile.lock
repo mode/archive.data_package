@@ -16,7 +16,7 @@ GEM
     activesupport (3.0.0)
     codeclimate-test-reporter (0.2.0)
       simplecov (>= 0.7.1, < 1.0.0)
-    data_kit (0.0.2)
+    data_kit (0.0.3)
       rcsv
       timeliness
     diff-lcs (1.2.5)
