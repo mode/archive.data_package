@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    data_package (0.0.1)
+    data_package (0.0.2)
       active_support
       data_kit
       rcsv
