@@ -20,7 +20,6 @@ Gem::Specification.new do |spec|
 
   # Runtime Dependencies
   spec.add_runtime_dependency 'rcsv'
-  spec.add_runtime_dependency 'rubyzip'
   spec.add_runtime_dependency 'yajl-ruby'
   spec.add_runtime_dependency 'data_kit'
   spec.add_runtime_dependency 'active_support'

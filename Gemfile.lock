@@ -5,7 +5,6 @@ PATH
       active_support
       data_kit
       rcsv
-      rubyzip
       yajl-ruby
 
 GEM
@@ -16,7 +15,7 @@ GEM
     activesupport (3.0.0)
     codeclimate-test-reporter (0.2.0)
       simplecov (>= 0.7.1, < 1.0.0)
-    data_kit (0.0.3)
+    data_kit (0.0.9)
       rcsv
       timeliness
     diff-lcs (1.2.5)
@@ -32,14 +31,13 @@ GEM
     rspec-expectations (2.14.4)
       diff-lcs (>= 1.1.3, < 2.0)
     rspec-mocks (2.14.4)
-    rubyzip (1.1.0)
     simplecov (0.8.2)
       docile (~> 1.1.0)
       multi_json
       simplecov-html (~> 0.8.0)
     simplecov-html (0.8.0)
     timeliness (0.3.7)
-    yajl-ruby (1.1.0)
+    yajl-ruby (1.2.0)
 
 PLATFORMS
   ruby
