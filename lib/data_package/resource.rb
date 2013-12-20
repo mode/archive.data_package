@@ -61,9 +61,9 @@ module DataPackage
       when :data
         nil # do something here
       when :path
-        nil # do something here
+        File.join(base_path, path) # do something here
       when :url
-        File.join(base_path, path)
+        raise "URL based resources are not yet supported"
       else
         raise "Resources require one of data, path or url keys to be specified"
       end

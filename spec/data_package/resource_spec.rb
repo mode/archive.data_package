@@ -30,9 +30,7 @@ describe DataPackage::Resource do
       resource = DataPackage::Resource.new(base_path, standard_resource)
 
       row_count = 0
-      resource.each_row do |row|
-        row_count += 1
-      end
+      resource.each_row { |row| row_count += 1 }
       row_count.should == 10
     end
 
