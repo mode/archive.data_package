@@ -45,7 +45,7 @@ module DataPackage
       when :path
         case format
         when 'csv'
-          DataKit::CSV::Parser.new(full_path).each_row(&block)
+          DataKit::CSV::Parser.new(file_path).each_row(&block)
         else
           raise "Unrecognized resource format #{format} for resource #{name}."
         end
@@ -56,11 +56,20 @@ module DataPackage
       end
     end
 
-    private
-
-    def full_path
-      File.join(base_path, path)
+    def file_path
+      case data_source_type
+      when :data
+        nil # do something here
+      when :path
+        nil # do something here
+      when :url
+        File.join(base_path, path)
+      else
+        raise "Resources require one of data, path or url keys to be specified"
+      end
     end
+
+    private
 
     def data_source_type
       if data
