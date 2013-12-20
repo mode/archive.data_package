@@ -59,7 +59,7 @@ module DataPackage
     end
 
     def resources=(json)
-      @resources = json.collect{|r| Resource.new(path, r)}
+      @resources = json.collect{|r| Resource.new(base_path, r)}
     end
 
     private

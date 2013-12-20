@@ -37,6 +37,7 @@ describe DataPackage::Package do
 
     package.resources.first.schema.fields.length.should == 10
     package.resources.first.schema.primary_key.should == ['id']
+    package.resources.first.base_path.should == package.base_path
 
     package.sources.length.should == 1
     package.licenses.length.should == 1
