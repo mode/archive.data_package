@@ -43,25 +43,14 @@ module DataPackage
       when :data
         data.each(&block)
       when :path
+        file_path = File.join(base_path, path)
+        
         case format
         when 'csv'
           DataKit::CSV::Parser.new(file_path).each_row(&block)
         else
           raise "Unrecognized resource format #{format} for resource #{name}."
         end
-      when :url
-        raise "URL based resources are not yet supported"
-      else
-        raise "Resources require one of data, path or url keys to be specified"
-      end
-    end
-
-    def file_path
-      case data_source_type
-      when :data
-        nil # do something here
-      when :path
-        File.join(base_path, path) # do something here
       when :url
         raise "URL based resources are not yet supported"
       else

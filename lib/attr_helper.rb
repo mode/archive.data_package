@@ -15,27 +15,11 @@ module AttrHelper
       #  that child classes can override
 
       unless required_attributes.empty?
-        required_attributes.each do |attribute|
-          klass.attr_required attribute.name, {
-            :name => attribute.name,
-            :key => attribute.key,
-            :default => attribute.default,
-            :serialize => attribute.serialize,
-            :if => attribute.if_cond,
-            :unless => attribute.unless_cond
-          }
-        end
+        add_required_attrs(klass)
       end
 
       unless optional_attributes.empty?
-        optional_attributes.each do |attribute|
-          klass.attr_optional attribute.name, {
-            :name => attribute.name,
-            :key => attribute.key,
-            :default => attribute.default,
-            :serialize => attribute.serialize
-          }
-        end
+        add_optional_attrs(klass)
       end
     end
 
@@ -55,6 +39,32 @@ module AttrHelper
 
     def required_attributes
       @required_attributes ||= []
+    end
+
+    private
+
+    def add_required_attrs(klass)
+      required_attributes.each do |attribute|
+        klass.attr_required attribute.name, {
+          :name => attribute.name,
+          :key => attribute.key,
+          :default => attribute.default,
+          :serialize => attribute.serialize,
+          :if => attribute.if_cond,
+          :unless => attribute.unless_cond
+        }
+      end
+    end
+
+    def add_optional_attrs(klass)
+      optional_attributes.each do |attribute|
+        klass.attr_optional attribute.name, {
+          :name => attribute.name,
+          :key => attribute.key,
+          :default => attribute.default,
+          :serialize => attribute.serialize
+        }
+      end
     end
   end
 
