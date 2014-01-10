@@ -14,7 +14,7 @@ describe DataPackage::Package do
 
     package.name.should == 'mypackage'
     package.version.should == '0.0.1'
-    package.resources.should == nil
+    package.resources.should == []
     package.base_path.should == tmpdir
   end
 

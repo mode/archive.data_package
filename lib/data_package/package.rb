@@ -6,7 +6,6 @@ module DataPackage
     attr_optional :title
     attr_optional :version
     attr_optional :description
-    attr_optional :last_modified
     attr_optional :datapackage_version
 
     attr_optional :sources, :serialize => Proc.new { |source|
@@ -33,6 +32,13 @@ module DataPackage
 
     def initialize(base_path, attrs = {})
       @base_path = base_path
+
+      @resources ||= []
+      @sources ||= []
+      @licenses ||= []
+      @maintainters ||= []
+      @contributors ||= []
+
       super(attrs)
     end
 

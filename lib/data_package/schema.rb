@@ -6,6 +6,12 @@ module DataPackage
 
     attr_optional :primary_key, :key => 'primaryKey'
 
+    def initialize(attrs = {})
+      @fields ||= []
+      
+      super(attrs)
+    end
+
     def fields=(json)
       @fields = json.collect{|f| Field.new(f)}
     end

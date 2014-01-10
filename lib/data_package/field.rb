@@ -1,3 +1,5 @@
+require 'set'
+
 module DataPackage
   class Field < Base
     Types = Set.new([
