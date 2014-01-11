@@ -1,6 +1,6 @@
 module KlassHelper
   class BaseKlass
-    include AttrHelper
+    include AttrHelper::Base
     include AttrHelper::Serialization
     
     attr_required :name

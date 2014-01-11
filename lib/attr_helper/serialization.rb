@@ -19,7 +19,8 @@ module AttrHelper
     end
 
     def to_json(options = {})
-      Yajl::Encoder.encode(to_hash, options.reverse_merge(:pretty => true))
+      options = {:pretty => true}.merge(options)
+      Yajl::Encoder.encode(to_hash, options)
     end
   end
 end

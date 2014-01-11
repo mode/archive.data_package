@@ -1,9 +1,10 @@
-require 'active_support/core_ext/hash'
-
 require "data_package/version"
 
 # Attribute Helpers
-require 'attr_helper'
+require 'attr_helper/base'
+
+# Ruby Helpers
+require 'data_package/helpers'
 
 # Core Specification
 require 'data_package/base'

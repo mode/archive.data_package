@@ -21,7 +21,6 @@ module DataPackage
 
     attr_optional :size
     attr_optional :hash
-    attr_optional :last_modified, :key => 'lastModified'
 
     attr_accessor :base_path
 
@@ -37,6 +36,14 @@ module DataPackage
     def dialect=(json)
       @dialect = Dialect.new(json)
     end
+
+    #
+    # Future Note:
+    #   For remote resources we should have a path *and* a url
+    #   If the path is a file on disk then use it, otherwise assume
+    #   that the path is a pointer to the destination of the URL data
+    #   this makes it possible for scripts to rely on a file location
+    #
 
     def each_row(&block)
       case data_source_type

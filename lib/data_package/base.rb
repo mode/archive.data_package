@@ -1,6 +1,6 @@
 module DataPackage
   class Base
-    include AttrHelper
+    include AttrHelper::Base
     include AttrHelper::Serialization
 
     def initialize(attrs = {})

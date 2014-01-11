@@ -22,7 +22,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'rcsv'
   spec.add_runtime_dependency 'yajl-ruby'
   spec.add_runtime_dependency 'data_kit'
-  spec.add_runtime_dependency 'active_support'
 
   # Development Dependencies
   spec.add_development_dependency "bundler", "~> 1.3"
