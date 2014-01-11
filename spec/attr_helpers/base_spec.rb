@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'klass_helper'
 
-describe AttrHelper do
+describe AttrHelper::Base do
   it "should initialize" do
     obj = KlassHelper::BaseKlass.new(:name => 'myvalue')
 
@@ -12,7 +12,7 @@ describe AttrHelper do
     obj.attr_required?(:format).should == false
 
     obj.missing_attributes.collect(&:name).should == [:data, :path, :url, :email, :web]
-    obj.required_attributes.collect(&:name).should == [:name, :data, :path, :url, :email, :web]
+    obj.required_attributes.collect(&:name).should == [:name, :data, :path, :url, :dialect, :email, :web]
 
     obj.attr_present?(:name).should == true
     obj.attr_missing?(:name).should == false
@@ -31,7 +31,7 @@ describe AttrHelper do
     obj.attr_required?(:format).should == false
 
     obj.missing_attributes.collect(&:name).should == [:data, :path, :url, :email, :web]
-    obj.required_attributes.collect(&:name).should == [:name, :data, :path, :url, :email, :web]
+    obj.required_attributes.collect(&:name).should == [:name, :data, :path, :url, :dialect, :email, :web]
 
     obj.attr_present?(:name).should == true
     obj.attr_missing?(:name).should == false
@@ -44,11 +44,11 @@ describe AttrHelper do
     obj = KlassHelper::ChildKlass.new(:name => 'myvalue')
 
     obj.missing_attributes.collect(&:name).should == [:data, :path, :url, :email, :web]
-    obj.required_attributes.collect(&:name).should == [:name, :data, :path, :url, :email, :web]
+    obj.required_attributes.collect(&:name).should == [:name, :data, :path, :url, :dialect, :email, :web]
 
     obj.path = 'data.csv'
     obj.missing_attributes.collect(&:name).should == [:email, :web]
-    obj.required_attributes.collect(&:name).should == [:name, :path, :email, :web]
+    obj.required_attributes.collect(&:name).should == [:name, :data, :path, :url, :dialect, :email, :web]
   end
 
   it "should write attributes through the setters" do

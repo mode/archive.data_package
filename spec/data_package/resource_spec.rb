@@ -15,6 +15,20 @@ describe DataPackage::Resource do
     resource.to_hash.should == standard_resource.merge('format' => 'csv', 'dialect' => DataPackage::Dialect.new.to_hash)
   end
 
+  it "should initialize and deserialize a remote resource" do
+    resource = DataPackage::Resource.new(base_path, remote_resource)
+
+    resource.format.should == 'csv'
+    resource.name.should == 'country-codes'
+    resource.path.should == 'data/country-codes.csv'
+    resource.url.should ==  'https://datahub.com/datasets/country-codes.csv'
+
+    resource.schema.fields.length.should == 3
+    resource.schema.primary_key.should == ['id']
+
+    resource.to_hash.should == remote_resource.merge('format' => 'csv')
+  end
+
   describe "#each_row" do
     it "should enumerate over inline data" do
       resource = DataPackage::Resource.new(base_path, inline_resource)

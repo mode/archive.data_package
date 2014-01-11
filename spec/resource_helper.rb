@@ -111,3 +111,30 @@ def http_resource
     }
   }
 end
+
+def remote_resource
+  {
+    "name" => "country-codes",
+    "path" => "data/country-codes.csv",
+    "url"  => "https://datahub.com/datasets/country-codes.csv",
+
+    'schema' => {
+      'fields' => [
+        {
+          'name' => 'id',
+          'type' => 'integer'
+        },
+        {
+          'name' => 'first_name',
+          'type' => 'string'
+        },
+        {
+          'name' => 'last_name',
+          'type' => 'string'
+        }
+      ],
+
+      'primaryKey' => ['id']
+    }
+  }
+end

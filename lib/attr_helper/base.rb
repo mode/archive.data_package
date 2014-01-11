@@ -69,22 +69,22 @@ module AttrHelper
       end
     end
 
-    def attributes
-      required_attributes + optional_attributes
-    end
-
     def required_attributes
-      self.class.required_attributes.select do |attribute|
-        attribute.required?(self)
-      end
+      self.class.required_attributes
     end
     
     def optional_attributes
       self.class.optional_attributes
     end
 
+    def attributes
+      required_attributes + optional_attributes
+    end
+
     def missing_attributes
       required_attributes.select do |attribute|
+        attribute.required?(self)
+      end.select do |attribute|
         value = send(attribute.name)
         value.respond_to?(:empty?) ? value.empty? : value.nil?
       end
