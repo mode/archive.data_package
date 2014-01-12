@@ -44,12 +44,12 @@ describe DataPackage::Resource do
     resource.to_hash.should == modified_resource.merge('format' => 'csv')
   end
 
-  describe "#each_row" do
+  describe "#each" do
     it "should enumerate over inline data" do
       resource = DataPackage::Resource.new(base_path, inline_resource)
 
       row_count = 0
-      resource.each_row do |row|
+      resource.each do |row|
         row_count += 1
       end
       row_count.should == 3
@@ -59,7 +59,7 @@ describe DataPackage::Resource do
       resource = DataPackage::Resource.new(base_path, standard_resource)
 
       row_count = 0
-      resource.each_row { |row| row_count += 1 }
+      resource.each { |row| row_count += 1 }
       row_count.should == 10
     end
 

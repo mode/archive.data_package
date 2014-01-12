@@ -1,7 +1,9 @@
 require 'data_kit'
 
 module DataPackage
-  class Resource < Base    
+  class Resource < Base
+    include Enumerable
+
     attr_optional :name
 
     attr_required :data,
@@ -45,7 +47,7 @@ module DataPackage
     #   this makes it possible for scripts to rely on a file location
     #
 
-    def each_row(&block)
+    def each(&block)
       case data_source_type
       when :data
         data.each(&block)
@@ -64,8 +66,6 @@ module DataPackage
         raise "Resources require one of data, path or url keys to be specified"
       end
     end
-
-    private
 
     def data_source_type
       if data
