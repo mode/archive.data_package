@@ -12,7 +12,15 @@ describe DataPackage::Resource do
     resource.schema.fields.length.should == 10
     resource.schema.primary_key.should == ['id']
 
-    resource.to_hash.should == standard_resource.merge('format' => 'csv', 'dialect' => DataPackage::Dialect.new.to_hash)
+    modified_resource = standard_resource.merge(
+      'format' => 'csv',
+      'dialect' => DataPackage::Dialect.new.to_hash,
+      'schema' => standard_resource['schema'].merge(
+        'primaryKey' => 'id'
+      )
+    )
+
+    resource.to_hash.should == modified_resource
   end
 
   it "should initialize and deserialize a remote resource" do
@@ -26,7 +34,14 @@ describe DataPackage::Resource do
     resource.schema.fields.length.should == 3
     resource.schema.primary_key.should == ['id']
 
-    resource.to_hash.should == remote_resource.merge('format' => 'csv')
+    modified_resource = remote_resource.merge(
+      'format' => 'csv',
+      'schema' => remote_resource['schema'].merge(
+        'primaryKey' => 'id'
+      )
+    )
+
+    resource.to_hash.should == modified_resource.merge('format' => 'csv')
   end
 
   describe "#each_row" do
