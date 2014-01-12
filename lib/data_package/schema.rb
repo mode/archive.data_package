@@ -5,7 +5,8 @@ module DataPackage
     }
 
     attr_optional :primary_key, :key => 'primaryKey',
-      :serialize => Proc.new{|pkey| pkey.length == 1 ? pkey.first : pkey }
+      :if => Proc.new{|pkey| pkey && pkey.length > 0},
+      :serialize => Proc.new{|pkey| pkey && pkey.length == 1 ? pkey.first : pkey }
 
     def initialize(attrs = {})
       @fields ||= []
@@ -23,6 +24,14 @@ module DataPackage
       else
         @primary_key = [json]
       end
+    end
+
+    def primary_key
+      @primary_key || []
+    end
+
+    def has_primary_key?
+      primary_key.length > 0
     end
   end
 end
