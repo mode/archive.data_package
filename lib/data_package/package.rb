@@ -96,7 +96,7 @@ module DataPackage
 
         if File.exist?(full_path)
           file = File.open(full_path)
-          new(base_path, Yajl::Parser.parse(file))
+          new(base_path, JSON.parse(File.read(file)))
         else
           raise "Couldn't find datapackage.json at #{path}"
         end

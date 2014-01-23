@@ -23,7 +23,7 @@ describe DataPackage::Schema do
     schema.has_primary_key?.should == true
 
     modified_json = json.merge('primaryKey' => 'income')
-    schema.to_json.should == Yajl::Encoder.encode(modified_json, :pretty => true)
+    schema.to_json.should == JSON.pretty_generate(modified_json)
   end
 
   it "should initialize with string primaryKey" do
@@ -35,7 +35,7 @@ describe DataPackage::Schema do
     schema.fields.first.name.should == 'income'
     schema.primary_key.should == ['income']
     schema.has_primary_key?.should == true
-    schema.to_json.should == Yajl::Encoder.encode(modified_json, :pretty => true)
+    schema.to_json.should == JSON.pretty_generate(modified_json)
   end
 
   it "should have primary key accessor" do
@@ -47,6 +47,6 @@ describe DataPackage::Schema do
     schema.fields.first.name.should == 'income'
     schema.primary_key.should == []
     schema.has_primary_key?.should == false
-    schema.to_json.should == Yajl::Encoder.encode(modified_json, :pretty => true)
+    schema.to_json.should == JSON.pretty_generate(modified_json)
   end
 end

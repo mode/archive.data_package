@@ -19,8 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Runtime Dependencies
-  spec.add_runtime_dependency 'rcsv'
-  spec.add_runtime_dependency 'yajl-ruby'
+  spec.add_runtime_dependency 'json'
   spec.add_runtime_dependency 'data_kit'
 
   # Development Dependencies

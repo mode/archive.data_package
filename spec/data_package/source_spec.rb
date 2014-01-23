@@ -17,6 +17,6 @@ describe DataPackage::Source do
     person.web.should == 'http://www.modeanalytics.com/josh'
 
     person.to_hash.should == json
-    person.to_json.should == Yajl::Encoder.encode(person.to_hash, :pretty => true)
+    person.to_json.should == JSON.pretty_generate(person.to_hash)
   end
 end

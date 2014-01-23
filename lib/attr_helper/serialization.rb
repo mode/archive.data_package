@@ -1,4 +1,4 @@
-require 'yajl'
+require 'json'
 
 module AttrHelper
   module Serialization
@@ -19,8 +19,11 @@ module AttrHelper
     end
 
     def to_json(options = {})
-      options = {:pretty => true}.merge(options)
-      Yajl::Encoder.encode(to_hash, options)
+      if options[:pretty].nil? || options[:pretty]
+        JSON.pretty_generate(to_hash)
+      else
+        JSON.generate(to_hash)
+      end
     end
   end
 end

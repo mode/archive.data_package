@@ -30,6 +30,6 @@ describe DataPackage::Dialect do
     dialect.quote_char.should == "\""
     dialect.skip_initial_space.should == true
 
-    dialect.to_json.should == Yajl::Encoder.encode(json, :pretty => true)
+    dialect.to_json.should == JSON.pretty_generate(json)
   end
 end

@@ -16,6 +16,6 @@ describe DataPackage::Person do
     person.email.should == 'josh@modeanalytics.com'
     person.web.should == 'http://www.modeanalytics.com/josh'
 
-    person.to_json.should == Yajl::Encoder.encode(json, :pretty => true)
+    person.to_json.should == JSON.pretty_generate(json)
   end
 end

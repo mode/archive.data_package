@@ -13,6 +13,6 @@ describe DataPackage::License do
 
     license.id.should == 'PDDL'
     license.url.should == 'http://opendatacommons.org/licenses/pddl/'
-    license.to_json.should == Yajl::Encoder.encode(json, :pretty => true)
+    license.to_json.should == JSON.pretty_generate(json)
   end
 end

@@ -19,7 +19,7 @@ describe DataPackage::Field do
     field.description.should == json['description']
 
     field.to_hash.should == json
-    field.to_json.should == Yajl::Encoder.encode(field.to_hash, :pretty => true)
+    field.to_json.should == JSON.pretty_generate(field.to_hash)
   end
 
   it "should require a name" do
