@@ -3,33 +3,22 @@ Data Package
 
 Library of classes and utilities for reading and writing data packages
 
-### Attribute Helpers
-
-#### Usage
+## Installation
 
 ```
-attr_required :name
-attr_required :path, :if => lamda {|obj|
-  obj.attr_missing?(:url) && obj.attr_missing?(:data)
-}
-
-attr_optional :title
-attr_optional :sources, :default => [], :key => 'sources',
-  :serialize => lambda { |source| source.collect(&:to_hash) }
+$ gem install data_package
 ```
 
-key is not required for attr_optional as it defaults to name of the attribute
-
-#### Instance Methods
+## Opening and reading data packages
 
 ```
-required_attrs => [...]
-optional_attrs => [...]
+require 'data_package'
+
+package = DataPackage::Package.open('path/to/package/dir')
+
+puts package.name
+puts package.version
+puts package.resources
 ```
 
-```
-attr_required?(attr_name) #=> boolean
-attr_missing?(attr_name) #=> boolean
-attr_present?(attr_name) #=> boolean
-valid? #=> boolean, Are all required fields present?
-```
+## This package currently supports data package specification v1.0-beta.8
